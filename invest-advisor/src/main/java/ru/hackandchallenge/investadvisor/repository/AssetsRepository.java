@@ -6,4 +6,6 @@ import ru.hackandchallenge.investadvisor.entity.Asset;
 
 @Repository
 public interface AssetsRepository extends JpaRepository<Asset, Long> {
+
+    Asset findAssetByCode(String code);
 }
