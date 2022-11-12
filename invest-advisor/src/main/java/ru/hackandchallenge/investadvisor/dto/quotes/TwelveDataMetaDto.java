@@ -11,7 +11,7 @@ public class TwelveDataMetaDto {
     private String symbol;
 
     @JsonProperty("interval")
-    @Schema(description = "Промежутки между данными котировок")
+    @Schema(description = "Промежутки между данными котировок. Доступные значения: 1min, 5min, 15min, 30min, 45min, 1h, 2h, 4h, 8h, 1day, 1week, 1month")
     private String interval;
 
     @JsonProperty("currency")

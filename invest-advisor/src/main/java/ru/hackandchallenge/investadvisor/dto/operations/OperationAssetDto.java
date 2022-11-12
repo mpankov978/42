@@ -7,9 +7,9 @@ import lombok.Data;
 @Schema(description = "Данные об операции над активом")
 public class OperationAssetDto {
 
-    @Schema(description = "Код актива")
+    @Schema(required = true, description = "Код актива")
     private String code;
 
-    @Schema(description = "Количество")
+    @Schema(required = true, description = "Количество")
     private Integer amount;
 }
