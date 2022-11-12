@@ -6,15 +6,16 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
+import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "asset")
@@ -28,18 +29,16 @@ public class Asset extends BaseEntity {
     private String code;
     @NotNull
     private String fullName;
+    @PositiveOrZero
     private BigDecimal cost;
     @NotNull
     @Enumerated(EnumType.STRING)
     private AssetType type;
+    @FutureOrPresent
     private LocalDateTime lastUpdated;
 
-    @ManyToMany
-    @JoinTable(name = "invest_portfolio_assets",
-            joinColumns = @JoinColumn(name = "assets_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "invest_portfolio_id", referencedColumnName = "id"))
-    @Fetch(FetchMode.SUBSELECT)
-    private List<InvestPortfolio> investPortfolios = new java.util.ArrayList<>();
+    @OneToMany(mappedBy = "asset", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<PortfolioAsset> portfolioAssets = new HashSet<>();
 
 
     public enum AssetType {

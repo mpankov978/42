@@ -6,4 +6,5 @@ import ru.hackandchallenge.investadvisor.entity.InvestPortfolio;
 
 @Repository
 public interface InvestPortfoliosRepository extends JpaRepository<InvestPortfolio, Long> {
+    InvestPortfolio findInvestPortfolioByClientId(Long clientId);
 }
