@@ -1,7 +1,7 @@
 package ru.hackandchallenge.investadvisor.filters;
 
 import lombok.AllArgsConstructor;
-import ru.hackandchallenge.investadvisor.dto.CheckAuthResponse;
+import ru.hackandchallenge.investadvisor.dto.auth.CheckAuthResponse;
 import ru.hackandchallenge.investadvisor.services.CheckAuthService;
 
 import javax.servlet.*;

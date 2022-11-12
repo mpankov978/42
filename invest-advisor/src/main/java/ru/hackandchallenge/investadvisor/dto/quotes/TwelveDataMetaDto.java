@@ -1,8 +1,8 @@
-package ru.hackandchallenge.investadvisor.dto;
+package ru.hackandchallenge.investadvisor.dto.quotes;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class TwelvedataMetaDto {
+public class TwelveDataMetaDto {
     @JsonProperty("symbol")
     private String symbol;
     @JsonProperty("interval")

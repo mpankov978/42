@@ -1,8 +1,8 @@
-package ru.hackandchallenge.investadvisor.dto;
+package ru.hackandchallenge.investadvisor.dto.quotes;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class TwelvedataValueDto {
+public class TwelveDataValueDto {
 
     @JsonProperty("datetime")
     private String datetime;
