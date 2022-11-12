@@ -1,12 +1,8 @@
 package ru.hackandchallenge.investadvisor.dto.auth;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-@Getter
-@AllArgsConstructor
-public class CheckAuthRequest {
-
-    private final String jwt;
+@Schema(description = "Контейнер для токена аутентификации")
+public record CheckAuthRequest(@Schema(description = "Токен аутентификации, полученный от API брокера") String jwt) {
 
 }
