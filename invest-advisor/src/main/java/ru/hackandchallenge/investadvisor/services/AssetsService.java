@@ -7,7 +7,7 @@ import ru.hackandchallenge.investadvisor.entity.Asset;
 import ru.hackandchallenge.investadvisor.entity.InvestPortfolio;
 import ru.hackandchallenge.investadvisor.entity.PortfolioAsset;
 import ru.hackandchallenge.investadvisor.exception.AssetOperationException;
-import ru.hackandchallenge.investadvisor.exception.NotEnoughBalanceException;
+import ru.hackandchallenge.investadvisor.exception.BalanceOperationException;
 import ru.hackandchallenge.investadvisor.repository.AssetsRepository;
 import ru.hackandchallenge.investadvisor.repository.InvestPortfoliosRepository;
 
@@ -74,7 +74,7 @@ public class AssetsService {
     private static void writeOffMoney(InvestPortfolio investPortfolio, BigDecimal cost, Integer amount) {
         BigDecimal sum = cost.multiply(BigDecimal.valueOf(amount));
         if (investPortfolio.getBalance().subtract(sum).compareTo(BigDecimal.ZERO) < 0) {
-            throw new NotEnoughBalanceException();
+            throw new BalanceOperationException("Недостаточно средств на счету");
         } else {
             investPortfolio.writeOffBalance(sum);
         }
@@ -94,7 +94,7 @@ public class AssetsService {
         repository.save(newAsset);
     }
 
-    private void updateAllAssetsData() {
+    public void updateAllAssetsData() {
         // todo: логика получения и сохранения актуальной инфы об всех активах
     }
 

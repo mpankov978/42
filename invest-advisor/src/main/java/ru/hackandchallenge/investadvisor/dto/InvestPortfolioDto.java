@@ -10,5 +10,5 @@ import java.util.List;
  * A DTO for the {@link InvestPortfolio} entity
  */
 public record InvestPortfolioDto(Long id, Long clientId, List<AssetDto> assets,
-                                 BigDecimal balance) implements Serializable {
+                                 BigDecimal balance, BigDecimal assetSum, BigDecimal totalSum) implements Serializable {
 }
