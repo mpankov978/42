@@ -17,8 +17,7 @@ import java.util.Locale;
 @Tag(name = "Контроллер новостей", description = "API для получения новостей с Investing.com")
 public class InvestingNewsController {
 
-    private static final HashMap<String, String> ITEMS_MAP = new HashMap<>();
-
+    public static final HashMap<String, String> ITEMS_MAP = new HashMap<>();
     static {
         ITEMS_MAP.put("ibm", "ibm");
         ITEMS_MAP.put("aapl", "apple-computer-inc");
