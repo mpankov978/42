@@ -13,6 +13,7 @@ import ru.hackandchallenge.investadvisor.entity.InvestPortfolio;
 import ru.hackandchallenge.investadvisor.entity.OperationHistory;
 import ru.hackandchallenge.investadvisor.entity.PortfolioAsset;
 import ru.hackandchallenge.investadvisor.exception.AssetOperationException;
+import ru.hackandchallenge.investadvisor.exception.AssetUpdateException;
 import ru.hackandchallenge.investadvisor.exception.BalanceOperationException;
 import ru.hackandchallenge.investadvisor.repository.AssetsRepository;
 import ru.hackandchallenge.investadvisor.repository.InvestPortfoliosRepository;
@@ -20,6 +21,7 @@ import ru.hackandchallenge.investadvisor.repository.InvestPortfoliosRepository;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -51,14 +53,14 @@ public class AssetsService {
             writeOffMoney(investPortfolio, existingPortfolioAsset.getAsset().getCost(), operationAssetDto.getAmount());
 
             existingPortfolioAsset.addCount(operationAssetDto.getAmount());
-            historyService.logOperation(clientId, OperationHistory.OperationType.BUY, existingPortfolioAsset.getAsset(), operationAssetDto.getAmount());
+            historyService.logAssetOperation(clientId, OperationHistory.OperationType.BUY, existingPortfolioAsset.getAsset(), operationAssetDto.getAmount());
         } else {
             var buyAsset = repository.findAssetByCode(operationAssetDto.getCode());
             writeOffMoney(investPortfolio, buyAsset.getCost(), operationAssetDto.getAmount());
 
             var newPortfolioAsset = new PortfolioAsset(operationAssetDto.getAmount(), investPortfolio, buyAsset);
             investPortfolio.getPortfolioAssets().add(newPortfolioAsset);
-            historyService.logOperation(clientId, OperationHistory.OperationType.BUY, newPortfolioAsset.getAsset(), operationAssetDto.getAmount());
+            historyService.logAssetOperation(clientId, OperationHistory.OperationType.BUY, newPortfolioAsset.getAsset(), operationAssetDto.getAmount());
         }
 
         investPortfoliosRepository.save(investPortfolio);
@@ -78,7 +80,7 @@ public class AssetsService {
             enrollMoney(investPortfolio, existingPortfolioAsset.getAsset().getCost(), operationAssetDto.getAmount());
 
             reduceAssets(operationAssetDto, investPortfolio, portfolioAsset);
-            historyService.logOperation(clientId, OperationHistory.OperationType.SELL, existingPortfolioAsset.getAsset(), operationAssetDto.getAmount());
+            historyService.logAssetOperation(clientId, OperationHistory.OperationType.SELL, existingPortfolioAsset.getAsset(), operationAssetDto.getAmount());
         } else {
             throw new AssetOperationException("Актив не существует в инвестиционном портфеле");
         }
@@ -101,11 +103,11 @@ public class AssetsService {
         updateAssetData(asset, lastAssetInfo);
     }
 
-    public void updateAssetData(Asset asset, TwelveDataValueDto lastAssetInfo) {
+    private void updateAssetData(Asset asset, TwelveDataValueDto lastAssetInfo) {
         asset.setCost(lastAssetInfo.getClose());
         asset.setLastUpdated(lastAssetInfo.getDatetime().split(" ").length > 1
                 ? LocalDateTime.parse(lastAssetInfo.getDatetime(), MINUTE_FORMATTER)
-                : LocalDateTime.parse(lastAssetInfo.getDatetime(), DAY_FORMATTER));
+                : LocalDate.parse(lastAssetInfo.getDatetime(), DAY_FORMATTER).atStartOfDay());
         repository.save(asset);
     }
 
@@ -118,6 +120,8 @@ public class AssetsService {
     }
 
     public List<AssetDto> getAssets() {
+        updateAllAssetsData();
+
         return repository.findAll()
                 .stream()
                 .map(asset -> new AssetDto(asset.getId(), asset.getCode(), asset.getFullName(),
@@ -127,20 +131,27 @@ public class AssetsService {
 
     public AssetExtendedDto getAssetByCode(String code) {
         Asset asset = repository.findAssetByCode(code);
+
         List<TwelveDataValueDto> twelveDataValueDtos = twelveDataCollector.getItems(Collections.singleton(asset.getCode()), "1day")
                 .stream()
                 .filter(dto -> dto.getMeta().getSymbol().equalsIgnoreCase(asset.getCode()))
                 .flatMap(v -> v.getValues().stream())
                 .toList();
-        var dto = new AssetExtendedDto();
-        dto.setId(asset.getId());
-        dto.setCode(asset.getCode());
-        dto.setFullName(asset.getFullName());
-        dto.setCost(asset.getCost());
-        dto.setLastUpdated(asset.getLastUpdated());
-        dto.setQuotes(twelveDataValueDtos);
 
-        return dto;
+        if (!twelveDataValueDtos.isEmpty()) {
+            updateAssetData(asset, twelveDataValueDtos.get(0));
+            var dto = new AssetExtendedDto();
+            dto.setId(asset.getId());
+            dto.setCode(asset.getCode());
+            dto.setFullName(asset.getFullName());
+            dto.setCost(asset.getCost());
+            dto.setLastUpdated(asset.getLastUpdated());
+            dto.setQuotes(twelveDataValueDtos);
+
+            return dto;
+        } else {
+            throw new AssetUpdateException("Не получены свежие данные об активе");
+        }
     }
 
     private static void writeOffMoney(InvestPortfolio investPortfolio, BigDecimal cost, Integer amount) {

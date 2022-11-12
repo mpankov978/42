@@ -1,7 +1,7 @@
 package ru.hackandchallenge.investadvisor.exception;
 
 /**
- * Ошибка "Актив не существует в инвестиционном портфеле"
+ * Ошибка при выполнения операции с активом
  */
 public class AssetOperationException extends RuntimeException {
 

@@ -20,6 +20,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static java.util.Arrays.asList;
+
 @Service
 @AllArgsConstructor
 public class SeedService {
@@ -42,7 +44,7 @@ public class SeedService {
         }
         var investPortfolio = new InvestPortfolio();
         investPortfolio.setClientId(100333L);
-        investPortfolio.setBalance(new BigDecimal("5000"));
+        investPortfolio.setBalance(new BigDecimal("4525"));
         investPortfolio.setCreated(LocalDateTime.now().minusDays(7));
         investPortfoliosRepository.save(investPortfolio);
     }
@@ -89,13 +91,20 @@ public class SeedService {
         if (!operationHistoryRepository.findAll().isEmpty()) {
             return;
         }
-        var operation = new OperationHistory();
-        operation.setClientId(100333L);
-        operation.setOperationType(OperationType.BUY);
-        operation.setAsset(assetsRepository.findById(1L).get());
-        operation.setAssetCost(new BigDecimal("95"));
-        operation.setAssetAmount(1);
-        operation.setOperationTime(LocalDateTime.now().minusDays(1));
-        operationHistoryRepository.save(operation);
+
+        var operationEnroll = new OperationHistory();
+        operationEnroll.setClientId(100333L);
+        operationEnroll.setOperationType(OperationType.ENROLL);
+        operationEnroll.setCost(new BigDecimal("5000"));
+        operationEnroll.setOperationTime(LocalDateTime.now().minusDays(2));
+
+        var operationBuy = new OperationHistory();
+        operationBuy.setClientId(100333L);
+        operationBuy.setOperationType(OperationType.BUY);
+        operationBuy.setAsset(assetsRepository.findById(1L).get());
+        operationBuy.setCost(new BigDecimal("95"));
+        operationBuy.setAssetAmount(1);
+        operationBuy.setOperationTime(LocalDateTime.now().minusDays(1));
+        operationHistoryRepository.saveAll(asList(operationEnroll, operationBuy));
     }
 }
