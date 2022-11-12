@@ -17,7 +17,8 @@ public class CheckAuthService {
 
     public CheckAuthResponse checkAuth(String jwt) {
         RestTemplate restTemplate = new RestTemplate();
-        CheckAuthRequest request = new CheckAuthRequest(jwt);
+        String split = jwt.replace("Bearer ", "");
+        CheckAuthRequest request = new CheckAuthRequest(split);
         ResponseEntity<CheckAuthResponse> response = restTemplate
                 .postForEntity(AUTH_URL, request, CheckAuthResponse.class);
         if (OK.equals(response.getStatusCode())) {

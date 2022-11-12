@@ -1,5 +1,7 @@
 package ru.hackandchallenge.investadvisor.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.hackandchallenge.investadvisor.collectors.investing.InvestingNewsCollector;
@@ -12,9 +14,11 @@ import java.util.Locale;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/collectors/investing")
-public class InvestingController {
+@Tag(name = "Контроллер новостей", description = "API для получения новостей с Investing.com")
+public class InvestingNewsController {
 
     private static final HashMap<String, String> ITEMS_MAP = new HashMap<>();
+
     static {
         ITEMS_MAP.put("ibm", "ibm");
         ITEMS_MAP.put("aapl", "apple-computer-inc");
@@ -26,6 +30,7 @@ public class InvestingController {
     private final InvestingNewsCollector newsCollector;
 
     @GetMapping("/news/{type}/{item}")
+    @Operation(description = "Получить новости с Investing.com")
     public List<InvestingNewsDto> getNews(
             @PathVariable String type,
             @PathVariable String item,
