@@ -8,6 +8,7 @@ import ru.hackandchallenge.investadvisor.dto.quotes.TwelveDataDto;
 import ru.hackandchallenge.investadvisor.dto.quotes.TwelveDataValueDto;
 import ru.hackandchallenge.investadvisor.entity.Asset;
 import ru.hackandchallenge.investadvisor.entity.InvestPortfolio;
+import ru.hackandchallenge.investadvisor.entity.OperationHistory;
 import ru.hackandchallenge.investadvisor.entity.PortfolioAsset;
 import ru.hackandchallenge.investadvisor.exception.AssetOperationException;
 import ru.hackandchallenge.investadvisor.exception.BalanceOperationException;
@@ -15,6 +16,7 @@ import ru.hackandchallenge.investadvisor.repository.AssetsRepository;
 import ru.hackandchallenge.investadvisor.repository.InvestPortfoliosRepository;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -25,36 +27,42 @@ import static ru.hackandchallenge.investadvisor.controller.InvestingNewsControll
 @Service
 @AllArgsConstructor
 public class AssetsService {
-
     private static final DateTimeFormatter MINUTE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private static final DateTimeFormatter DAY_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+    private final OperationHistoryService historyService;
     private final AssetsRepository repository;
     private final InvestPortfoliosRepository investPortfoliosRepository;
     private final TwelveDataCollector twelveDataCollector;
 
+    @Transactional
     public void processBuyOperation(Long clientId, OperationAssetDto operationAssetDto) {
         InvestPortfolio investPortfolio = investPortfoliosRepository.findInvestPortfolioByClientId(clientId);
-        Optional<PortfolioAsset> portfolioAsset = investPortfolio.getPortfolioAssets()
+        Optional<PortfolioAsset> optionalPortfolioAsset = investPortfolio.getPortfolioAssets()
                 .stream()
                 .filter(asset -> asset.getAsset().getCode().equalsIgnoreCase(operationAssetDto.getCode()))
                 .findFirst();
-        portfolioAsset.ifPresentOrElse(pa -> updateAssetData(pa.getAsset()), this::updateAllAssetsData);
+        optionalPortfolioAsset.ifPresentOrElse(pa -> updateAssetData(pa.getAsset()), this::updateAllAssetsData);
 
-        if (portfolioAsset.isPresent()) {
-            writeOffMoney(investPortfolio, portfolioAsset.get().getAsset().getCost(), operationAssetDto.getAmount());
+        if (optionalPortfolioAsset.isPresent()) {
+            PortfolioAsset existingPortfolioAsset = optionalPortfolioAsset.get();
+            writeOffMoney(investPortfolio, existingPortfolioAsset.getAsset().getCost(), operationAssetDto.getAmount());
 
-            portfolioAsset.get().addCount(operationAssetDto.getAmount());
+            existingPortfolioAsset.addCount(operationAssetDto.getAmount());
+            historyService.logOperation(clientId, OperationHistory.OperationType.BUY, existingPortfolioAsset.getAsset(), operationAssetDto.getAmount());
         } else {
-            Asset buyAsset = repository.findAssetByCode(operationAssetDto.getCode());
+            var buyAsset = repository.findAssetByCode(operationAssetDto.getCode());
             writeOffMoney(investPortfolio, buyAsset.getCost(), operationAssetDto.getAmount());
 
-            PortfolioAsset newPortfolioAsset = new PortfolioAsset(operationAssetDto.getAmount(), investPortfolio, buyAsset);
+            var newPortfolioAsset = new PortfolioAsset(operationAssetDto.getAmount(), investPortfolio, buyAsset);
             investPortfolio.getPortfolioAssets().add(newPortfolioAsset);
+            historyService.logOperation(clientId, OperationHistory.OperationType.BUY, newPortfolioAsset.getAsset(), operationAssetDto.getAmount());
         }
+
         investPortfoliosRepository.save(investPortfolio);
     }
 
+    @Transactional
     public void processSellOperation(Long clientId, OperationAssetDto operationAssetDto) {
         InvestPortfolio investPortfolio = investPortfoliosRepository.findInvestPortfolioByClientId(clientId);
         Optional<PortfolioAsset> portfolioAsset = investPortfolio.getPortfolioAssets()
@@ -64,9 +72,11 @@ public class AssetsService {
         portfolioAsset.ifPresentOrElse(pa -> updateAssetData(pa.getAsset()), this::updateAllAssetsData);
 
         if (portfolioAsset.isPresent()) {
-            enrollMoney(investPortfolio, portfolioAsset.get().getAsset().getCost(), operationAssetDto.getAmount());
+            PortfolioAsset existingPortfolioAsset = portfolioAsset.get();
+            enrollMoney(investPortfolio, existingPortfolioAsset.getAsset().getCost(), operationAssetDto.getAmount());
 
             reduceAssets(operationAssetDto, investPortfolio, portfolioAsset);
+            historyService.logOperation(clientId, OperationHistory.OperationType.SELL, existingPortfolioAsset.getAsset(), operationAssetDto.getAmount());
         } else {
             throw new AssetOperationException("Актив не существует в инвестиционном портфеле");
         }
