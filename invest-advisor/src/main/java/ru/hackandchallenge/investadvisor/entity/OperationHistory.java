@@ -31,11 +31,11 @@ public class OperationHistory extends BaseEntity {
     private OperationType operationType;
 
     @ManyToOne
-    @JoinColumn(name = "asset_id")
+    @JoinColumn(columnDefinition="integer", name = "asset_id")
     private Asset asset;
 
     @PositiveOrZero
-    private BigDecimal assetCost;
+    private BigDecimal cost;
 
     @PositiveOrZero
     private Integer assetAmount;
@@ -45,7 +45,8 @@ public class OperationHistory extends BaseEntity {
 
     public enum OperationType {
         BUY("buy"),
-        SELL("sell");
+        SELL("sell"),
+        ENROLL("enroll"); // зачисление на баланс
 
         private final String type;
 

@@ -8,6 +8,7 @@ import ru.hackandchallenge.investadvisor.entity.OperationHistory;
 import ru.hackandchallenge.investadvisor.entity.OperationHistory.OperationType;
 import ru.hackandchallenge.investadvisor.repository.OperationHistoryRepository;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -18,13 +19,23 @@ public class OperationHistoryService {
 
     private OperationHistoryRepository repository;
 
-    public void logOperation(Long clientId, OperationType type, Asset asset, Integer amount) {
+    public void logAssetOperation(Long clientId, OperationType type, Asset asset, Integer amount) {
         var operationHistory = new OperationHistory();
         operationHistory.setClientId(clientId);
         operationHistory.setOperationType(type);
         operationHistory.setAsset(asset);
-        operationHistory.setAssetCost(asset.getCost());
+        operationHistory.setCost(asset.getCost());
         operationHistory.setAssetAmount(amount);
+        operationHistory.setOperationTime(LocalDateTime.now());
+
+        repository.save(operationHistory);
+    }
+
+    public void logEnrollOperation(Long clientId, BigDecimal cost) {
+        var operationHistory = new OperationHistory();
+        operationHistory.setClientId(clientId);
+        operationHistory.setOperationType(OperationType.ENROLL);
+        operationHistory.setCost(cost);
         operationHistory.setOperationTime(LocalDateTime.now());
 
         repository.save(operationHistory);
@@ -41,8 +52,9 @@ public class OperationHistoryService {
         }
         return history.stream()
                 .map(operation -> new OperationHistoryDto(operation.getId(), operation.getClientId(),
-                        operation.getOperationType(), operation.getAsset().getCode(), operation.getAsset().getFullName(),
-                        operation.getAssetCost(), operation.getAssetAmount(), operation.getOperationTime()))
+                        operation.getOperationType(), operation.getAsset() != null ? operation.getAsset().getCode() : null,
+                        operation.getAsset() != null ? operation.getAsset().getFullName() : null, operation.getCost(),
+                        operation.getAssetAmount(), operation.getOperationTime()))
                 .toList();
     }
 }

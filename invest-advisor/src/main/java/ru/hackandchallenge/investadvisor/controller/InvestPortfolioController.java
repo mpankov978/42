@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.hackandchallenge.investadvisor.dto.InvestPortfolioDto;
 import ru.hackandchallenge.investadvisor.services.InvestPortfolioService;
 
+import java.math.BigDecimal;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/info/portfolio")
@@ -19,6 +21,12 @@ public class InvestPortfolioController {
     @Operation(description = "Получить данные об инвест. портфеле")
     public InvestPortfolioDto getInfo(@RequestAttribute("clientId") Long clientId) {
         return investPortfolioService.getInfo(clientId);
+    }
+
+    @GetMapping("/totalInvestments")
+    @Operation(description = "Получить общую вложенную сумму в портфель за промежуток времени")
+    public BigDecimal getTotalInvestments(@RequestAttribute("clientId") Long clientId, @RequestParam(required = false) Integer days, @RequestParam(required = false) boolean all) {
+        return investPortfolioService.getTotalInvestments(clientId, days, all);
     }
 
 
