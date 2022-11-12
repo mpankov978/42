@@ -2,14 +2,13 @@ package ru.hackandchallenge.investadvisor.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import ru.hackandchallenge.investadvisor.dto.operations.OperationAssetDto;
 import ru.hackandchallenge.investadvisor.services.AssetsService;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/operations/assets")
-public class AssetsController extends ResponseEntityExceptionHandler {
+public class AssetsController {
 
     private final AssetsService assetsService;
 
