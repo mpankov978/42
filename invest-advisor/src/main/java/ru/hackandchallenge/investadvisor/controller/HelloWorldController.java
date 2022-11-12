@@ -3,9 +3,11 @@ package ru.hackandchallenge.investadvisor.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.net.http.HttpHeaders;
+
+import static org.apache.naming.ResourceRef.AUTH;
 
 @RestController
 @AllArgsConstructor
@@ -15,8 +17,8 @@ public class HelloWorldController {
     @GetMapping(path = "/hello")
     @Operation(description = "Тестовая страница")
     @ResponseBody
-    public String getPage() {
-        return "Hello World!";
+    public Integer getPage(@RequestAttribute("clientId") Integer clientId) {
+        return clientId;
     }
 
 
