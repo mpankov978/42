@@ -24,6 +24,17 @@ public class InvestingNewsController {
         ITEMS_MAP.put("hhr", "headhunter-group-plc");
         ITEMS_MAP.put("hydr", "gidroogk-011d");
         ITEMS_MAP.put("ozon", "ozon-holdings-plc");
+        ITEMS_MAP.put("tatn", "tatneft_rts");
+        ITEMS_MAP.put("chmf", "severstal_rts");
+        ITEMS_MAP.put("vkcoq", "mail.ru-grp-wi");
+        ITEMS_MAP.put("mgnt", "magnit_rts");
+        ITEMS_MAP.put("aflt", "aeroflot");
+        ITEMS_MAP.put("afks", "afk-sistema_rts");
+        ITEMS_MAP.put("rtkm", "rostelecom");
+        ITEMS_MAP.put("nvtk", "novatek_rts");
+        ITEMS_MAP.put("pikk", "pik_rts");
+        ITEMS_MAP.put("nlmk", "nlmk_rts");
+        ITEMS_MAP.put("dsky", "detskiy-mir-pao");
     }
 
     private final InvestingNewsService newsService;
