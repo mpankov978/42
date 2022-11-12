@@ -4,8 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.hackandchallenge.investadvisor.collectors.investing.InvestingNewsCollector;
 import ru.hackandchallenge.investadvisor.dto.investing.InvestingNewsDto;
+import ru.hackandchallenge.investadvisor.services.InvestingNewsService;
 
 import java.util.HashMap;
 import java.util.List;
@@ -26,17 +26,27 @@ public class InvestingNewsController {
         ITEMS_MAP.put("ozon", "ozon-holdings-plc");
     }
 
-    private final InvestingNewsCollector newsCollector;
+    private final InvestingNewsService newsService;
 
-    @GetMapping("/news/{type}/{item}")
+    @GetMapping("/news/{item}")
     @Operation(description = "Получить новости с Investing.com")
     public List<InvestingNewsDto> getNews(
-            @PathVariable String type,
             @PathVariable String item,
             @RequestParam Integer limit) {
-        String itemInInvesting = ITEMS_MAP.get(item.toLowerCase(Locale.ROOT)) != null
-                ? ITEMS_MAP.get(item.toLowerCase(Locale.ROOT))
-                : item;
-        return newsCollector.collect(type, itemInInvesting, limit);
+        return newsService.getNewsByItem(item, limit);
+    }
+
+    @GetMapping("/news/mine")
+    @Operation(description = "Получить новости с Investing.com для авторизованного пользователя")
+    public List<InvestingNewsDto> getMyNews(
+            @RequestAttribute Long clientId) {
+        return newsService.getClientNews(clientId);
+    }
+
+    @GetMapping("/client/{clientId}/news")
+    @Operation(description = "Получить новости с Investing.com для указанного пользователя")
+    public List<InvestingNewsDto> getClientNews(
+            @PathVariable Long clientId) {
+        return newsService.getClientNews(clientId);
     }
 }
