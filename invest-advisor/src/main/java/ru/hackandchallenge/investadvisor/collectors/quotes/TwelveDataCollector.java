@@ -1,6 +1,7 @@
 package ru.hackandchallenge.investadvisor.collectors.quotes;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import ru.hackandchallenge.investadvisor.dto.quotes.TwelveDataDto;
 
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,7 +25,12 @@ public class TwelveDataCollector {
     private static final Pattern TWELVEDATA_DTO_PATTERN = Pattern.compile("\"\\w+\":(\\{\"meta\":\\{.*?},\"values\":\\[.*?],\"status\":\"ok\"}),?");
     private static final String SITE = "https://api.twelvedata.com";
     private static final String API_KEY = "997ed3a430e644949befeab17b59d302";
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final ObjectMapper LDT_OBJECT_MAPPER = new ObjectMapper()
+            .registerModule(new JavaTimeModule())
+            .setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+    private static final ObjectMapper DT_OBJECT_MAPPER = new ObjectMapper()
+            .registerModule(new JavaTimeModule())
+            .setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
 
     @SneakyThrows
     public Set<TwelveDataDto> getItems(Collection<String> items, String interval) {
@@ -33,14 +40,18 @@ public class TwelveDataCollector {
         String url = SITE + "/time_series?symbol=" + symbols + "&interval=" + interval + "&apikey=" + API_KEY + "&source=docs";
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
         if (OK.equals(response.getStatusCode())) {
-            Matcher matcher = TWELVEDATA_DTO_PATTERN.matcher(response.getBody());
-            while (matcher.find()) {
-                result.add(OBJECT_MAPPER.readValue(matcher.group(1), TwelveDataDto.class));
+            Matcher dtoMatcher = TWELVEDATA_DTO_PATTERN.matcher(response.getBody());
+            while (dtoMatcher.find()) {
+                result.add(DT_OBJECT_MAPPER.readValue(dtoMatcher.group(1), TwelveDataDto.class));
             }
         } else {
             throw new RuntimeException();
         }
         return result;
+    }
+
+    public Set<TwelveDataDto> getItems(Collection<String> items) {
+        return getItems(items, "1min");
     }
 
 }

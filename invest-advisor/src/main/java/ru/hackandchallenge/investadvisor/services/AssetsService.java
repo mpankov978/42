@@ -2,7 +2,10 @@ package ru.hackandchallenge.investadvisor.services;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.hackandchallenge.investadvisor.collectors.quotes.TwelveDataCollector;
 import ru.hackandchallenge.investadvisor.dto.operations.OperationAssetDto;
+import ru.hackandchallenge.investadvisor.dto.quotes.TwelveDataDto;
+import ru.hackandchallenge.investadvisor.dto.quotes.TwelveDataValueDto;
 import ru.hackandchallenge.investadvisor.entity.Asset;
 import ru.hackandchallenge.investadvisor.entity.InvestPortfolio;
 import ru.hackandchallenge.investadvisor.entity.PortfolioAsset;
@@ -11,15 +14,24 @@ import ru.hackandchallenge.investadvisor.exception.BalanceOperationException;
 import ru.hackandchallenge.investadvisor.repository.AssetsRepository;
 import ru.hackandchallenge.investadvisor.repository.InvestPortfoliosRepository;
 
+import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+
+import static ru.hackandchallenge.investadvisor.controller.InvestingNewsController.ITEMS_MAP;
 
 @Service
 @AllArgsConstructor
 public class AssetsService {
 
+    private static final DateTimeFormatter MINUTE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter DAY_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
     private final AssetsRepository repository;
     private final InvestPortfoliosRepository investPortfoliosRepository;
+    private final TwelveDataCollector twelveDataCollector;
 
     public void processBuyOperation(Long clientId, OperationAssetDto operationAssetDto) {
         InvestPortfolio investPortfolio = investPortfoliosRepository.findInvestPortfolioByClientId(clientId);
@@ -85,18 +97,31 @@ public class AssetsService {
         investPortfolio.addBalance(sum);
     }
 
-    public void updateAssetData(Asset oldAsset) {
-        // todo: логика получения и сохранения актуальной инфы об активе
-        Asset newAsset = repository.findAssetByCode(oldAsset.getCode());
-        oldAsset.setFullName(newAsset.getFullName());
-        oldAsset.setCost(newAsset.getCost());
-        oldAsset.setLastUpdated(newAsset.getLastUpdated());
-        repository.save(newAsset);
+    public void updateAssetData(Asset asset) {
+        Set<TwelveDataDto> twelveDataDtos = twelveDataCollector.getItems(Collections.singleton(asset.getCode()));
+        TwelveDataValueDto lastAssetInfo = getForAsset(asset, twelveDataDtos);
+        updateAssetData(asset, lastAssetInfo);
+    }
+
+    public void updateAssetData(Asset asset, TwelveDataValueDto lastAssetInfo) {
+        asset.setCost(lastAssetInfo.getClose());
+        asset.setLastUpdated(lastAssetInfo.getDatetime().split(" ").length > 1
+                ? LocalDateTime.parse(lastAssetInfo.getDatetime(), MINUTE_FORMATTER)
+                : LocalDateTime.parse(lastAssetInfo.getDatetime(), DAY_FORMATTER));
+        repository.save(asset);
     }
 
     public void updateAllAssetsData() {
-        // todo: логика получения и сохранения актуальной инфы об всех активах
+        List<Asset> assets = repository.findAll();
+        Set<TwelveDataDto> twelveDataDtos = twelveDataCollector.getItems(ITEMS_MAP.keySet());
+        for (Asset asset : assets) {
+            updateAssetData(asset, getForAsset(asset, twelveDataDtos));
+        }
     }
 
+    private TwelveDataValueDto getForAsset(Asset asset, Collection<TwelveDataDto> from) {
+        return from.stream().filter(dto -> dto.getMeta().getSymbol().equalsIgnoreCase(asset.getCode()))
+                .findFirst().orElseThrow(EntityNotFoundException::new).getValues().get(0);
+    }
 
 }

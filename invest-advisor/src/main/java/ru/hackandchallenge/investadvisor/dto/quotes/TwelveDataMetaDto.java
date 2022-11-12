@@ -1,8 +1,16 @@
 package ru.hackandchallenge.investadvisor.dto.quotes;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Schema(description = "Метаданные котировки")
 public class TwelveDataMetaDto {
 
