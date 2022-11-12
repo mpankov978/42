@@ -1,4 +1,4 @@
-package ru.hackandchallenge.investadvisor.model;
+package ru.hackandchallenge.investadvisor.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

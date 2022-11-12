@@ -6,7 +6,9 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
+import ru.hackandchallenge.investadvisor.dto.InvestingNewsDto;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,11 +19,16 @@ public class InvestingNewsCollector {
 
     @SneakyThrows
     public List<InvestingNewsDto> collect(String type, String item, Integer limit) {
-        Document doc = Jsoup.connect(SITE + "/" + type+ "/" + item + "-news").get();
+        Document doc = Jsoup.connect(SITE + "/" + type + "/" + item + "-news").get();
         Elements select = doc.select("#leftColumn > div.mediumTitle1");
-        return select.first().getElementsByClass("js-article-item articleItem   ").stream().limit(limit)
-                .map(this::parseArticle)
-                .collect(Collectors.toList());
+        if (select != null && select.first() != null) {
+            return select.first().getElementsByClass("js-article-item articleItem   ")
+                    .stream().limit(limit)
+                    .map(this::parseArticle)
+                    .collect(Collectors.toList());
+        } else {
+            return Collections.EMPTY_LIST;
+        }
     }
 
     private InvestingNewsDto parseArticle(Element article) {

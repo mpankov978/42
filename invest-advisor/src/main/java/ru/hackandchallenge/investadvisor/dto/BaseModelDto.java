@@ -1,11 +1,11 @@
-package ru.hackandchallenge.investadvisor.models;
+package ru.hackandchallenge.investadvisor.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class BaseModel {
+public class BaseModelDto {
 
     private String jwtToken;
 

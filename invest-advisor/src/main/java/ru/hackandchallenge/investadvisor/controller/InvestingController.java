@@ -3,7 +3,7 @@ package ru.hackandchallenge.investadvisor.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.hackandchallenge.investadvisor.collectors.investing.InvestingNewsCollector;
-import ru.hackandchallenge.investadvisor.collectors.investing.InvestingNewsDto;
+import ru.hackandchallenge.investadvisor.dto.InvestingNewsDto;
 
 import java.util.List;
 
