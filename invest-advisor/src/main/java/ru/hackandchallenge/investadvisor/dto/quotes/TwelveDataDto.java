@@ -1,4 +1,4 @@
-package ru.hackandchallenge.investadvisor.dto;
+package ru.hackandchallenge.investadvisor.dto.quotes;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -12,12 +12,12 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class TwelvedataDto {
+public class TwelveDataDto {
 
     @JsonProperty("meta")
-    private TwelvedataMetaDto meta;
+    private TwelveDataMetaDto meta;
     @JsonProperty("values")
-    private List<TwelvedataValueDto> values;
+    private List<TwelveDataValueDto> values;
     @JsonProperty("status")
     private String status;
 

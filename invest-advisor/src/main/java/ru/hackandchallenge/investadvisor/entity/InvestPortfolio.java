@@ -5,10 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,6 +33,9 @@ public class InvestPortfolio extends BaseEntity {
     @NotNull
     @PositiveOrZero
     private BigDecimal balance;
+
+    @NotNull
+    private LocalDateTime created;
 
     public void addBalance(BigDecimal amount) {
         this.balance = this.balance.add(amount);

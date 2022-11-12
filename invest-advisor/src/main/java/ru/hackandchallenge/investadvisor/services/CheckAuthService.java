@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import ru.hackandchallenge.investadvisor.dto.CheckAuthRequest;
-import ru.hackandchallenge.investadvisor.dto.CheckAuthResponse;
+import ru.hackandchallenge.investadvisor.dto.auth.CheckAuthRequest;
+import ru.hackandchallenge.investadvisor.dto.auth.CheckAuthResponse;
 
 import static org.springframework.http.HttpStatus.OK;
 

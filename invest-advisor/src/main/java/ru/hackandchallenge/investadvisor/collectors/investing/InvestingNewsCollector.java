@@ -6,7 +6,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
-import ru.hackandchallenge.investadvisor.dto.InvestingNewsDto;
+import ru.hackandchallenge.investadvisor.dto.investing.InvestingNewsDto;
 
 import java.util.Collections;
 import java.util.List;

@@ -2,9 +2,8 @@ package ru.hackandchallenge.investadvisor.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import org.webjars.NotFoundException;
 import ru.hackandchallenge.investadvisor.collectors.investing.InvestingNewsCollector;
-import ru.hackandchallenge.investadvisor.dto.InvestingNewsDto;
+import ru.hackandchallenge.investadvisor.dto.investing.InvestingNewsDto;
 
 import java.util.HashMap;
 import java.util.List;
