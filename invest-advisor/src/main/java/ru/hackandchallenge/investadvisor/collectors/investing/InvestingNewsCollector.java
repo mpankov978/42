@@ -10,7 +10,6 @@ import ru.hackandchallenge.investadvisor.dto.investing.InvestingNewsDto;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class InvestingNewsCollector {
@@ -25,9 +24,9 @@ public class InvestingNewsCollector {
             return select.first().getElementsByClass("js-article-item articleItem   ")
                     .stream().limit(limit)
                     .map(this::parseArticle)
-                    .collect(Collectors.toList());
+                    .toList();
         } else {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
     }
 

@@ -20,12 +20,12 @@ public class InvestingNewsService {
 
     private static final Pattern ARTICLE_ID_PATTERN = Pattern.compile("\\d+$");
 
-    public InvestingNewsCollector collector;
-    public InvestPortfolioService portfolioService;
+    private final InvestingNewsCollector collector;
+    private final InvestPortfolioService portfolioService;
 
     public List<InvestingNewsDto> getClientNews(Long clientId) {
         InvestPortfolioDto dto = portfolioService.getInfo(clientId);
-        List<InvestingNewsDto> news = dto.assets().stream().map(asset -> collector.collect(asset.code(), 3))
+        List<InvestingNewsDto> news = dto.assets().stream().map(asset -> collector.collect(asset.getCode(), 3))
                 .reduce(new ArrayList<>(), (a, b) -> {
                     a.addAll(b);
                     return a;

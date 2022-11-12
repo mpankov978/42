@@ -9,7 +9,7 @@ import ru.hackandchallenge.investadvisor.services.InvestingNewsService;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
+import java.util.Map;
 
 @RestController
 @AllArgsConstructor
@@ -17,7 +17,7 @@ import java.util.Locale;
 @Tag(name = "Контроллер новостей", description = "API для получения новостей с Investing.com")
 public class InvestingNewsController {
 
-    public static final HashMap<String, String> ITEMS_MAP = new HashMap<>();
+    public static final Map<String, String> ITEMS_MAP = new HashMap<>();
     static {
         ITEMS_MAP.put("ibm", "ibm");
         ITEMS_MAP.put("aapl", "apple-computer-inc");
