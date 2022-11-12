@@ -42,7 +42,7 @@ public class InvestPortfolioService {
                 }).toList();
 
         BigDecimal assetSum = assets.stream()
-                .map(assetDto -> assetDto.cost().multiply(BigDecimal.valueOf(assetDto.amount())))
+                .map(assetDto -> assetDto.getCost().multiply(BigDecimal.valueOf(assetDto.getAmount())))
                 .reduce(BigDecimal::add)
                 .orElse(BigDecimal.ZERO);
 

@@ -3,6 +3,8 @@ package ru.hackandchallenge.investadvisor.services;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.hackandchallenge.investadvisor.collectors.quotes.TwelveDataCollector;
+import ru.hackandchallenge.investadvisor.dto.AssetDto;
+import ru.hackandchallenge.investadvisor.dto.AssetExtendedDto;
 import ru.hackandchallenge.investadvisor.dto.operations.OperationAssetDto;
 import ru.hackandchallenge.investadvisor.dto.quotes.TwelveDataDto;
 import ru.hackandchallenge.investadvisor.dto.quotes.TwelveDataValueDto;
@@ -93,22 +95,8 @@ public class AssetsService {
         }
     }
 
-    private static void writeOffMoney(InvestPortfolio investPortfolio, BigDecimal cost, Integer amount) {
-        BigDecimal sum = cost.multiply(BigDecimal.valueOf(amount));
-        if (investPortfolio.getBalance().subtract(sum).compareTo(BigDecimal.ZERO) < 0) {
-            throw new BalanceOperationException("Недостаточно средств на счету");
-        } else {
-            investPortfolio.writeOffBalance(sum);
-        }
-    }
-
-    private static void enrollMoney(InvestPortfolio investPortfolio, BigDecimal cost, Integer amount) {
-        BigDecimal sum = cost.multiply(BigDecimal.valueOf(amount));
-        investPortfolio.addBalance(sum);
-    }
-
     public void updateAssetData(Asset asset) {
-        Set<TwelveDataDto> twelveDataDtos = twelveDataCollector.getItems(Collections.singleton(asset.getCode()));
+        Set<TwelveDataDto> twelveDataDtos = twelveDataCollector.getItems(Collections.singleton(asset.getCode()), "1min");
         TwelveDataValueDto lastAssetInfo = getForAsset(asset, twelveDataDtos);
         updateAssetData(asset, lastAssetInfo);
     }
@@ -123,15 +111,59 @@ public class AssetsService {
 
     public void updateAllAssetsData() {
         List<Asset> assets = repository.findAll();
-        Set<TwelveDataDto> twelveDataDtos = twelveDataCollector.getItems(ITEMS_MAP.keySet());
+        Set<TwelveDataDto> twelveDataDtos = twelveDataCollector.getItems(ITEMS_MAP.keySet(), "1min");
         for (Asset asset : assets) {
             updateAssetData(asset, getForAsset(asset, twelveDataDtos));
         }
     }
 
-    private TwelveDataValueDto getForAsset(Asset asset, Collection<TwelveDataDto> from) {
-        return from.stream().filter(dto -> dto.getMeta().getSymbol().equalsIgnoreCase(asset.getCode()))
-                .findFirst().orElseThrow(EntityNotFoundException::new).getValues().get(0);
+    public List<AssetDto> getAssets() {
+        return repository.findAll()
+                .stream()
+                .map(asset -> new AssetDto(asset.getId(), asset.getCode(), asset.getFullName(),
+                        asset.getCost(), null, asset.getLastUpdated()))
+                .toList();
     }
 
+    public AssetExtendedDto getAssetByCode(String code) {
+        Asset asset = repository.findAssetByCode(code);
+        List<TwelveDataValueDto> twelveDataValueDtos = twelveDataCollector.getItems(Collections.singleton(asset.getCode()), "1day")
+                .stream()
+                .filter(dto -> dto.getMeta().getSymbol().equalsIgnoreCase(asset.getCode()))
+                .flatMap(v -> v.getValues().stream())
+                .toList();
+        var dto = new AssetExtendedDto();
+        dto.setId(asset.getId());
+        dto.setCode(asset.getCode());
+        dto.setFullName(asset.getFullName());
+        dto.setCost(asset.getCost());
+        dto.setLastUpdated(asset.getLastUpdated());
+        dto.setQuotes(twelveDataValueDtos);
+
+        return dto;
+    }
+
+    private static void writeOffMoney(InvestPortfolio investPortfolio, BigDecimal cost, Integer amount) {
+        BigDecimal sum = cost.multiply(BigDecimal.valueOf(amount));
+        if (investPortfolio.getBalance().subtract(sum).compareTo(BigDecimal.ZERO) < 0) {
+            throw new BalanceOperationException("Недостаточно средств на счету");
+        } else {
+            investPortfolio.writeOffBalance(sum);
+        }
+    }
+
+    private static void enrollMoney(InvestPortfolio investPortfolio, BigDecimal cost, Integer amount) {
+        BigDecimal sum = cost.multiply(BigDecimal.valueOf(amount));
+        investPortfolio.addBalance(sum);
+    }
+
+    private TwelveDataValueDto getForAsset(Asset asset, Collection<TwelveDataDto> from) {
+        return from
+                .stream()
+                .filter(dto -> dto.getMeta().getSymbol().equalsIgnoreCase(asset.getCode()))
+                .findFirst()
+                .orElseThrow(EntityNotFoundException::new)
+                .getValues()
+                .get(0);
+    }
 }

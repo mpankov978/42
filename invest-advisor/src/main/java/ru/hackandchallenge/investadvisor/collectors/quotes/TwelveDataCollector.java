@@ -37,7 +37,7 @@ public class TwelveDataCollector {
         Set<TwelveDataDto> result = new HashSet<>();
         String symbols = String.join(",", items);
         RestTemplate restTemplate = new RestTemplate();
-        String url = SITE + "/time_series?symbol=" + symbols + "&interval=" + interval + "&apikey=" + API_KEY + "&source=docs";
+        String url = SITE + "/time_series?symbol=" + symbols + ",&interval=" + interval + "&apikey=" + API_KEY + "&source=docs";
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
         if (OK.equals(response.getStatusCode())) {
             Matcher dtoMatcher = TWELVEDATA_DTO_PATTERN.matcher(response.getBody());
@@ -48,10 +48,6 @@ public class TwelveDataCollector {
             throw new RuntimeException();
         }
         return result;
-    }
-
-    public Set<TwelveDataDto> getItems(Collection<String> items) {
-        return getItems(items, "1min");
     }
 
 }
