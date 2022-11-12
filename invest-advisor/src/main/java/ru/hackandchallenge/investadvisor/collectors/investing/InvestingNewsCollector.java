@@ -18,8 +18,8 @@ public class InvestingNewsCollector {
     private static final String SITE = "https://ru.investing.com";
 
     @SneakyThrows
-    public List<InvestingNewsDto> collect(String type, String item, Integer limit) {
-        Document doc = Jsoup.connect(SITE + "/" + type + "/" + item + "-news").get();
+    public List<InvestingNewsDto> collect(String item, Integer limit) {
+        Document doc = Jsoup.connect(SITE + "/equities/" + item + "-news").get();
         Elements select = doc.select("#leftColumn > div.mediumTitle1");
         if (select != null && select.first() != null) {
             return select.first().getElementsByClass("js-article-item articleItem   ")
