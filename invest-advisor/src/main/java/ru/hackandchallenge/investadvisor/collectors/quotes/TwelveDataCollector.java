@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import ru.hackandchallenge.investadvisor.dto.quotes.TwelveDataDto;
+import ru.hackandchallenge.investadvisor.exception.DataCollectorException;
 
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -25,10 +26,7 @@ public class TwelveDataCollector {
     private static final Pattern TWELVEDATA_DTO_PATTERN = Pattern.compile("\"\\w+\":(\\{\"meta\":\\{.*?},\"values\":\\[.*?],\"status\":\"ok\"}),?");
     private static final String SITE = "https://api.twelvedata.com";
     private static final String API_KEY = "997ed3a430e644949befeab17b59d302";
-    private static final ObjectMapper LDT_OBJECT_MAPPER = new ObjectMapper()
-            .registerModule(new JavaTimeModule())
-            .setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
-    private static final ObjectMapper DT_OBJECT_MAPPER = new ObjectMapper()
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
             .registerModule(new JavaTimeModule())
             .setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
 
@@ -42,10 +40,10 @@ public class TwelveDataCollector {
         if (OK.equals(response.getStatusCode())) {
             Matcher dtoMatcher = TWELVEDATA_DTO_PATTERN.matcher(response.getBody());
             while (dtoMatcher.find()) {
-                result.add(DT_OBJECT_MAPPER.readValue(dtoMatcher.group(1), TwelveDataDto.class));
+                result.add(OBJECT_MAPPER.readValue(dtoMatcher.group(1), TwelveDataDto.class));
             }
         } else {
-            throw new RuntimeException();
+            throw new DataCollectorException("Ошибка при сборе данных коллектором");
         }
         return result;
     }
