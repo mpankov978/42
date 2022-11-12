@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -27,7 +29,8 @@ public class InvestPortfolio extends BaseEntity {
     @NotNull
     private Long clientId;
 
-    @OneToMany(mappedBy = "investPortfolio", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = javax.persistence.FetchType.EAGER, mappedBy = "investPortfolio", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Fetch(FetchMode.SUBSELECT)
     private Set<PortfolioAsset> portfolioAssets = new HashSet<>();
 
     @NotNull
