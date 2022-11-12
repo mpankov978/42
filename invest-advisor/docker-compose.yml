@@ -8,6 +8,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 42
       POSTGRES_DB: investadvisor
+    ports:
+      - "5433:5432"
 
   backend:
     build: ./
