@@ -29,7 +29,7 @@ public class SwaggerConfig {
                 .info(new Info()
                         .title("Invest Advisor")
                         .description("Описание") //todo: описание
-                        .version("v1.1.1"));
+                        .version("v1.1.2"));
     }
 
 }

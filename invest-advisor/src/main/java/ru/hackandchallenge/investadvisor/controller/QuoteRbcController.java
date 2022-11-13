@@ -15,13 +15,13 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/collectors/dividends")
-@Tag(name = "Контроллер новостей с https://quote.rbc.ru/tag/Dividends", description = "API для получения новостей с https://quote.rbc.ru/tag/Dividends")
+@Tag(name = "Контроллер новостей о дивидендах", description = "API для получения новостей с РБК.Дивиденды")
 public class QuoteRbcController {
 
     private final QuoteRbcCollector collector;
 
     @GetMapping
-    @Operation(description = "Получить новости с https://quote.rbc.ru/tag/Dividends")
+    @Operation(description = "Получить новости с РБК.Дивиденды")
     public List<NewsDto> dividends(@RequestParam Integer limit) {
         return collector.collect(limit);
     }

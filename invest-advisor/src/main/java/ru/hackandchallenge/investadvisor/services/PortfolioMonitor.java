@@ -45,7 +45,7 @@ public class PortfolioMonitor {
                         .filter(h -> k.equalsIgnoreCase(h.getAsset().getCode()))
                         .max(Comparator.comparing(OperationHistory::getOperationTime))
                         .orElseThrow(EntityNotFoundException::new);
-                //100% -((текущ.цена/стар.цена) * 100% ) <= 75%
+                //100% - ((текущ.цена/стар.цена) * 100% ) <= 75%
                 if (BigDecimal.valueOf(100).subtract(v.divide(operation.getCost()).multiply(BigDecimal.valueOf(100))).compareTo(BigDecimal.valueOf(75)) <= 0) {
                     notificationRepository.save(new Notification(portfolio.getClientId(), Notification.NotificationType.ASSET_COST_DROP,
                             operation.getAsset().getId(), operation.getCost(), v, LocalDateTime.now(), portfolio));

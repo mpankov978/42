@@ -13,19 +13,15 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@Schema(description = "Данные котировок")
 public class TwelveDataDto {
 
     @JsonProperty("meta")
-    @Schema(description = "Метаданные")
     private TwelveDataMetaDto meta;
 
     @JsonProperty("values")
-    @Schema(description = "Котировки")
     private List<TwelveDataValueDto> values;
 
     @JsonProperty("status")
-    @Schema(description = "Статус")
     private String status;
 
 }
