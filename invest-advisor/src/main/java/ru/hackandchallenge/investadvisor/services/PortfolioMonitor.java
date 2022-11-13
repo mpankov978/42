@@ -1,6 +1,8 @@
 package ru.hackandchallenge.investadvisor.services;
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import ru.hackandchallenge.investadvisor.entity.InvestPortfolio;
@@ -19,7 +21,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PortfolioMonitor {
 
     private final InvestPortfoliosRepository portfoliosRepository;
@@ -27,7 +29,10 @@ public class PortfolioMonitor {
     private final OperationHistoryService operationHistoryService;
     private final NotificationRepository notificationRepository;
 
-    @Scheduled(cron = "@hourly")
+    @Value("${variables.portfolioMonitorTrigger}")
+    private Integer portfolioMonitorTrigger;
+
+    @Scheduled(cron = "${variables.portfolioMonitorCron}")
     public void checkPortfolioAssets() {
         List<InvestPortfolio> portfoliosToCheck = portfoliosRepository.findInvestPortfoliosByNeedMonitorIsTrue();
         if (portfoliosToCheck.isEmpty()) {
@@ -47,7 +52,7 @@ public class PortfolioMonitor {
                         .max(Comparator.comparing(OperationHistory::getOperationTime))
                         .orElseThrow(EntityNotFoundException::new);
                 //100% - ((текущ.цена/стар.цена) * 100% ) <= 75%
-                if (BigDecimal.valueOf(100).subtract(v.divide(operation.getCost(), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100))).compareTo(BigDecimal.valueOf(75)) <= 0) {
+                if (BigDecimal.valueOf(100).subtract(v.divide(operation.getCost(), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100))).compareTo(BigDecimal.valueOf(portfolioMonitorTrigger)) <= 0) {
                     notificationRepository.save(new Notification(portfolio.getClientId(), Notification.NotificationType.ASSET_COST_DROP,
                             operation.getAsset().getId(), operation.getCost(), v, LocalDateTime.now(), portfolio));
                 }

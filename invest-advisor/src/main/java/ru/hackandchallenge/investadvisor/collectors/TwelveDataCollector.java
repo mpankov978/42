@@ -3,7 +3,9 @@ package ru.hackandchallenge.investadvisor.collectors;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -20,15 +22,17 @@ import java.util.regex.Pattern;
 import static org.springframework.http.HttpStatus.OK;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class TwelveDataCollector {
 
     private static final Pattern TWELVEDATA_DTO_PATTERN = Pattern.compile("\"\\w+\":(\\{\"meta\":\\{.*?},\"values\":\\[.*?],\"status\":\"ok\"}),?");
     private static final String SITE = "https://api.twelvedata.com";
-    private static final String API_KEY = "997ed3a430e644949befeab17b59d302";
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
             .registerModule(new JavaTimeModule())
             .setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
+
+    @Value("${variables.twelvedataApiKey}")
+    private String API_KEY;
 
     @SneakyThrows
     public Set<TwelveDataDto> getItems(Collection<String> items, String interval) {
