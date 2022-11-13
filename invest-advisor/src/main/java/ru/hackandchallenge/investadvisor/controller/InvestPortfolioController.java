@@ -42,7 +42,7 @@ public class InvestPortfolioController {
 
     @ClientOnly
     @PostMapping("/monitor")
-    @Operation(description = "Получить общую вложенную сумму в портфель за промежуток времени")
+    @Operation(description = "Установить отслеживание инвест. портфеля")
     public void setMonitorStatus(@RequestAttribute("clientId") Long clientId, @RequestParam boolean enabled) {
         investPortfolioService.setMonitorStatus(clientId, enabled);
     }
