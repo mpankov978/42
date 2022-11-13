@@ -2,9 +2,9 @@ package ru.hackandchallenge.investadvisor.services;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.hackandchallenge.investadvisor.collectors.investing.InvestingNewsCollector;
+import ru.hackandchallenge.investadvisor.collectors.InvestingNewsCollector;
 import ru.hackandchallenge.investadvisor.dto.InvestPortfolioDto;
-import ru.hackandchallenge.investadvisor.dto.investing.InvestingNewsDto;
+import ru.hackandchallenge.investadvisor.dto.NewsDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +23,9 @@ public class InvestingNewsService {
     private final InvestingNewsCollector collector;
     private final InvestPortfolioService portfolioService;
 
-    public List<InvestingNewsDto> getClientNews(Long clientId) {
+    public List<NewsDto> getClientNews(Long clientId) {
         InvestPortfolioDto dto = portfolioService.getInfo(clientId, false);
-        List<InvestingNewsDto> news = dto.assets()
+        List<NewsDto> news = dto.assets()
                 .stream()
                 .map(asset -> {
                     String value = ITEMS_MAP.get(asset.getCode());
@@ -39,7 +39,7 @@ public class InvestingNewsService {
         return news;
     }
 
-    private int compare(InvestingNewsDto a, InvestingNewsDto b) {
+    private int compare(NewsDto a, NewsDto b) {
         Matcher idMatcher;
         idMatcher = ARTICLE_ID_PATTERN.matcher(a.getLink());
         idMatcher.find();
@@ -50,7 +50,7 @@ public class InvestingNewsService {
         return aId - bId;
     }
 
-    public List<InvestingNewsDto> getNewsByItem(String item, Integer limit) {
+    public List<NewsDto> getNewsByItem(String item, Integer limit) {
         String itemInInvesting = ITEMS_MAP.get(item.toLowerCase(Locale.ROOT)) != null
                 ? ITEMS_MAP.get(item.toLowerCase(Locale.ROOT))
                 : item;

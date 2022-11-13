@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.hackandchallenge.investadvisor.collectors.quotes.TwelveDataCollector;
+import ru.hackandchallenge.investadvisor.collectors.TwelveDataCollector;
 import ru.hackandchallenge.investadvisor.dto.quotes.TwelveDataDto;
 
 import java.util.Collection;

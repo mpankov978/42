@@ -1,4 +1,4 @@
-package ru.hackandchallenge.investadvisor.collectors.investing;
+package ru.hackandchallenge.investadvisor.collectors;
 
 import lombok.SneakyThrows;
 import org.jsoup.Jsoup;
@@ -6,7 +6,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
-import ru.hackandchallenge.investadvisor.dto.investing.InvestingNewsDto;
+import ru.hackandchallenge.investadvisor.dto.NewsDto;
 
 import java.util.Collections;
 import java.util.List;
@@ -17,7 +17,7 @@ public class InvestingNewsCollector {
     private static final String SITE = "https://ru.investing.com";
 
     @SneakyThrows
-    public List<InvestingNewsDto> collect(String item, Integer limit) {
+    public List<NewsDto> collect(String item, Integer limit) {
         Document doc = Jsoup.connect(SITE + "/equities/" + item + "-news").get();
         Elements select = doc.select("#leftColumn > div.mediumTitle1");
         if (select != null && select.first() != null) {
@@ -30,16 +30,16 @@ public class InvestingNewsCollector {
         }
     }
 
-    private InvestingNewsDto parseArticle(Element article) {
-        final InvestingNewsDto investingNewsDto = new InvestingNewsDto();
+    private NewsDto parseArticle(Element article) {
+        final NewsDto newsDto = new NewsDto();
         Element firstArticle = article.getElementsByClass("textDiv").first();
-        investingNewsDto.setPreview(firstArticle.getElementsByTag("p").text());
+        newsDto.setPreview(firstArticle.getElementsByTag("p").text());
         Element href = firstArticle.getElementsByAttribute("href").first();
-        investingNewsDto.setTitle(href.text());
-        investingNewsDto.setLink(SITE + href.attributes().get("href"));
+        newsDto.setTitle(href.text());
+        newsDto.setLink(SITE + href.attributes().get("href"));
         Element details = firstArticle.getElementsByClass("articleDetails").first();
-        investingNewsDto.setFrom(details.getElementsByTag("span").get(0).text());
-        return investingNewsDto;
+        newsDto.setFrom(details.getElementsByTag("span").get(0).text());
+        return newsDto;
     }
 
 }
