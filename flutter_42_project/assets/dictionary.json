@@ -1,0 +1,109 @@
+[
+  {
+    "keyWords": [
+      "график акции",
+      "историю акции",
+      "котировки акции",
+      "динамику акции"
+    ],
+    "endpoint": "/collectors/twelvedata/get"
+  },
+  {
+    "keyWords": [
+      "новости акции"
+    ],
+    "endpoint": "/collectors/news/investing/{item}"
+  },
+  {
+    "keyWords": [
+      "новости моих акций"
+    ],
+    "endpoint": "/collectors/news/investing/mine"
+  },
+  {
+    "keyWords": [
+      "новости по дивидендам",
+      "дивиденды"
+    ],
+    "endpoint": "/collectors/news/dividends"
+  },
+  {
+    "keyWords": [
+      "оплатить по QR",
+      "оплачу по QR"
+    ],
+    "endpoint": "/operations/balance/generate-qr"
+  },
+  {
+    "keyWords": [
+      "пополнить баланс",
+      "пополнить счет",
+      "пополнить"
+    ],
+    "endpoint": "/operations/balance/enroll"
+  },
+  {
+    "keyWords": [
+      "мой портфель",
+      "мои активы",
+      "мои акции"
+    ],
+    "endpoint": "/info/portfolio"
+  },
+  {
+    "keyWords": [
+      "сколько я вложил",
+      "мои вложения"
+    ],
+    "endpoint": "/info/portfolio/totalInvestments"
+  },
+  {
+    "keyWords": [
+      "отследить портфель",
+      "отслеживание портфеля",
+      "отслеживание активов"
+    ],
+    "endpoint": "/info/portfolio/monitor"
+  },
+  {
+    "keyWords": [
+      "историю",
+      "мои операции"
+    ],
+    "endpoint": "/operations/history"
+  },
+  {
+    "keyWords": [
+      "все активы",
+      "активы",
+      "доступные активы"
+    ],
+    "endpoint": "/info/assets"
+  },
+  {
+    "keyWords": [
+      "актив с кодом"
+    ],
+    "endpoint": "/info/assets/{code}"
+  },
+  {
+    "keyWords": [
+      "продать актив",
+      "продажа активов",
+      "продай актив"
+    ],
+    "endpoint": "/operations/assets/sell"
+  },
+  {
+    "keyWords": [
+      "купить актив",
+      "купля активов",
+      "купи актив",
+      "покупка актива",
+      "покупка активов",
+      "покупку актива",
+      "покупка активов"
+    ],
+    "endpoint": "/operations/assets/buy"
+  }
+]
