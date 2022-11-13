@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import ru.hackandchallenge.investadvisor.dto.auth.CheckAuthRequest;
 import ru.hackandchallenge.investadvisor.dto.auth.CheckAuthResponse;
+import ru.hackandchallenge.investadvisor.exception.AuthException;
 
 import static org.springframework.http.HttpStatus.OK;
 
@@ -17,14 +18,13 @@ public class CheckAuthService {
 
     public CheckAuthResponse checkAuth(String jwt) {
         RestTemplate restTemplate = new RestTemplate();
-        String split = jwt.replace("Bearer ", "");
-        CheckAuthRequest request = new CheckAuthRequest(split);
+        CheckAuthRequest request = new CheckAuthRequest(jwt.replace("Bearer ", ""));
         ResponseEntity<CheckAuthResponse> response = restTemplate
                 .postForEntity(AUTH_URL, request, CheckAuthResponse.class);
         if (OK.equals(response.getStatusCode())) {
             return response.getBody();
         } else {
-            throw new RuntimeException();
+            throw new AuthException("Ошибка при аутентификации");
         }
     }
 }

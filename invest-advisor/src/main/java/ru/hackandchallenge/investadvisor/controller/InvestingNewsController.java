@@ -48,14 +48,14 @@ public class InvestingNewsController {
     }
 
     @GetMapping("/news/mine")
-    @Operation(description = "Получить новости с Investing.com для авторизованного пользователя")
+    @Operation(description = "Получить новости об активах текущего клиента с Investing.com")
     public List<InvestingNewsDto> getMyNews(
             @RequestAttribute Long clientId) {
         return newsService.getClientNews(clientId);
     }
 
     @GetMapping("/client/{clientId}/news")
-    @Operation(description = "Получить новости с Investing.com для указанного пользователя")
+    @Operation(description = "Получить новости об активах для указанного клиента с Investing.com")
     public List<InvestingNewsDto> getClientNews(
             @PathVariable Long clientId) {
         return newsService.getClientNews(clientId);
