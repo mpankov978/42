@@ -67,4 +67,9 @@ public class InvestPortfolioService {
                 .orElse(BigDecimal.ZERO);
     }
 
+    public void setMonitorStatus(Long clientId, boolean enabled) {
+        InvestPortfolio portfolio = investPortfoliosRepository.findInvestPortfolioByClientId(clientId);
+        portfolio.setNeedMonitor(enabled);
+        investPortfoliosRepository.save(portfolio);
+    }
 }
