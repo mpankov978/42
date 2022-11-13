@@ -40,5 +40,12 @@ public class InvestPortfolioController {
         return investPortfolioService.getTotalInvestments(clientId, days, all);
     }
 
+    @ClientOnly
+    @PostMapping("/monitor")
+    @Operation(description = "Получить общую вложенную сумму в портфель за промежуток времени")
+    public void setMonitorStatus(@RequestAttribute("clientId") Long clientId, @RequestParam boolean enabled) {
+        investPortfolioService.setMonitorStatus(clientId, enabled);
+    }
+
 
 }
