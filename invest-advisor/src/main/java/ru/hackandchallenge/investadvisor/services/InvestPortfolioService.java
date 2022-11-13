@@ -36,8 +36,10 @@ public class InvestPortfolioService {
         investPortfoliosRepository.save(portfolio);
     }
 
-    public InvestPortfolioDto getInfo(Long clientId) {
-        assetsService.updateAllAssetsData();
+    public InvestPortfolioDto getInfo(Long clientId, boolean needUpdateData) {
+        if (needUpdateData) {
+            assetsService.updateAllAssetsData();
+        }
 
         InvestPortfolio investPortfolio = investPortfoliosRepository.findInvestPortfolioByClientId(clientId);
         List<AssetDto> assets = investPortfolio.getPortfolioAssets()

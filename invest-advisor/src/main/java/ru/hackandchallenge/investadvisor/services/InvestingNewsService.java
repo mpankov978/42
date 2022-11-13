@@ -24,8 +24,13 @@ public class InvestingNewsService {
     private final InvestPortfolioService portfolioService;
 
     public List<InvestingNewsDto> getClientNews(Long clientId) {
-        InvestPortfolioDto dto = portfolioService.getInfo(clientId);
-        List<InvestingNewsDto> news = dto.assets().stream().map(asset -> collector.collect(asset.getCode(), 3))
+        InvestPortfolioDto dto = portfolioService.getInfo(clientId, false);
+        List<InvestingNewsDto> news = dto.assets()
+                .stream()
+                .map(asset -> {
+                    String value = ITEMS_MAP.get(asset.getCode());
+                    return collector.collect(value, 3);
+                })
                 .reduce(new ArrayList<>(), (a, b) -> {
                     a.addAll(b);
                     return a;
