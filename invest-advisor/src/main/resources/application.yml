@@ -22,7 +22,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5433/investadvisor
     username: postgres
-    password: 42
+    password: 1
   liquibase:
     enabled: false
     change-log: "classpath:db/changelog/db.changelog-master.yaml"
