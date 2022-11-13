@@ -2,6 +2,7 @@ package ru.hackandchallenge.investadvisor.filters;
 
 import lombok.AllArgsConstructor;
 import ru.hackandchallenge.investadvisor.dto.auth.CheckAuthResponse;
+import ru.hackandchallenge.investadvisor.infrastructure.ClientComponent;
 import ru.hackandchallenge.investadvisor.services.CheckAuthService;
 
 import javax.servlet.*;
@@ -13,7 +14,9 @@ import java.io.IOException;
 public class AuthFilter implements Filter {
 
     private static final String AUTH_HEADER = "authorization";
-    private CheckAuthService checkAuthService;
+
+    private final CheckAuthService checkAuthService;
+    private final ClientComponent clientComponent;
 
     @Override
     public void doFilter(
@@ -24,6 +27,8 @@ public class AuthFilter implements Filter {
         String jwt = req.getHeader(AUTH_HEADER);
         CheckAuthResponse checkAuthResponse = checkAuthService.checkAuth(jwt);
         req.setAttribute("clientId", checkAuthResponse.getUserId());
+        clientComponent.setId(checkAuthResponse.getUserId());
+        clientComponent.setRole(checkAuthResponse.getRole());
         chain.doFilter(request, response);
     }
 }

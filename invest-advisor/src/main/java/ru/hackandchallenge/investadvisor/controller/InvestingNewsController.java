@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ru.hackandchallenge.investadvisor.aspects.ClientOnly;
+import ru.hackandchallenge.investadvisor.aspects.OperatorOnly;
 import ru.hackandchallenge.investadvisor.dto.NewsDto;
 import ru.hackandchallenge.investadvisor.services.InvestingNewsService;
 
@@ -36,6 +38,7 @@ public class InvestingNewsController {
         return newsService.getNewsByItem(item, limit);
     }
 
+    @ClientOnly
     @GetMapping("/news/mine")
     @Operation(description = "Получить новости об активах текущего клиента с Investing.com")
     public List<NewsDto> getMyNews(
@@ -43,6 +46,7 @@ public class InvestingNewsController {
         return newsService.getClientNews(clientId);
     }
 
+    @OperatorOnly
     @GetMapping("/client/{clientId}/news")
     @Operation(description = "Получить новости об активах для указанного клиента с Investing.com")
     public List<NewsDto> getClientNews(

@@ -14,7 +14,7 @@ import lombok.Setter;
 public class CheckAuthResponse {
 
     @Schema(description = "Идентификатор пользователя")
-    private Integer userId;
+    private Long userId;
 
     @Schema(description = "Роль пользователя")
     private String role;

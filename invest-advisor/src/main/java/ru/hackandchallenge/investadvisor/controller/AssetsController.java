@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ru.hackandchallenge.investadvisor.aspects.ClientOnly;
 import ru.hackandchallenge.investadvisor.dto.AssetDto;
 import ru.hackandchallenge.investadvisor.dto.AssetExtendedDto;
 import ru.hackandchallenge.investadvisor.dto.operations.OperationAssetDto;
@@ -31,12 +32,14 @@ public class AssetsController {
         return assetsService.getAssetByCode(code);
     }
 
+    @ClientOnly
     @PostMapping("/operations/assets/buy")
     @Operation(description = "Купить актив")
     public void buyAsset(@RequestAttribute("clientId") Long clientId, @Valid @RequestBody OperationAssetDto operationAssetDto) {
         assetsService.processBuyOperation(clientId, operationAssetDto);
     }
 
+    @ClientOnly
     @PostMapping("/operations/assets/sell")
     @Operation(description = "Продать актив")
     public void sellAsset(@RequestAttribute("clientId") Long clientId, @Valid @RequestBody OperationAssetDto operationAssetDto) {

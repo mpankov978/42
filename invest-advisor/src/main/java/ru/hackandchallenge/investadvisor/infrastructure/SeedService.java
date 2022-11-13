@@ -1,4 +1,4 @@
-package ru.hackandchallenge.investadvisor.services;
+package ru.hackandchallenge.investadvisor.infrastructure;
 
 import lombok.AllArgsConstructor;
 import org.springframework.context.event.ContextRefreshedEvent;
