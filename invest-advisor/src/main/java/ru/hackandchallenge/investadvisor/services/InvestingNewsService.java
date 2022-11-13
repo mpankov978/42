@@ -12,7 +12,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static ru.hackandchallenge.investadvisor.controller.InvestingNewsController.ITEMS_MAP;
+import static ru.hackandchallenge.investadvisor.controller.NewsController.ITEMS_MAP;
 
 @Service
 @AllArgsConstructor
