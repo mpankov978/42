@@ -19,22 +19,11 @@ public class InvestingNewsController {
 
     public static final Map<String, String> ITEMS_MAP = new HashMap<>();
     static {
-        ITEMS_MAP.put("ibm", "ibm");
         ITEMS_MAP.put("aapl", "apple-computer-inc");
-        ITEMS_MAP.put("hhr", "headhunter-group-plc");
-        ITEMS_MAP.put("hydr", "gidroogk-011d");
+        ITEMS_MAP.put("ibm", "ibm");
         ITEMS_MAP.put("ozon", "ozon-holdings-plc");
-        ITEMS_MAP.put("tatn", "tatneft_rts");
-        ITEMS_MAP.put("chmf", "severstal_rts");
-        ITEMS_MAP.put("vkcoq", "mail.ru-grp-wi");
-        ITEMS_MAP.put("mgnt", "magnit_rts");
-        ITEMS_MAP.put("aflt", "aeroflot");
-        ITEMS_MAP.put("afks", "afk-sistema_rts");
-        ITEMS_MAP.put("rtkm", "rostelecom");
-        ITEMS_MAP.put("nvtk", "novatek_rts");
-        ITEMS_MAP.put("pikk", "pik_rts");
-        ITEMS_MAP.put("nlmk", "nlmk_rts");
-        ITEMS_MAP.put("dsky", "detskiy-mir-pao");
+        ITEMS_MAP.put("yndx", "yandex");
+        ITEMS_MAP.put("hhr", "headhunter-group-plc");
     }
 
     private final InvestingNewsService newsService;

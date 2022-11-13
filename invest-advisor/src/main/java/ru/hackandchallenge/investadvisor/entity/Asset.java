@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
@@ -34,7 +33,7 @@ public class Asset extends BaseEntity {
     @NotNull
     @Enumerated(EnumType.STRING)
     private AssetType type;
-    @FutureOrPresent
+    @NotNull
     private LocalDateTime lastUpdated;
 
     @OneToMany(mappedBy = "asset", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -9,6 +9,7 @@ import ru.hackandchallenge.investadvisor.dto.AssetExtendedDto;
 import ru.hackandchallenge.investadvisor.dto.operations.OperationAssetDto;
 import ru.hackandchallenge.investadvisor.services.AssetsService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -32,13 +33,13 @@ public class AssetsController {
 
     @PostMapping("/operations/assets/buy")
     @Operation(description = "Купить актив")
-    public void buyAsset(@RequestAttribute("clientId") Long clientId, @RequestBody OperationAssetDto operationAssetDto) {
+    public void buyAsset(@RequestAttribute("clientId") Long clientId, @Valid @RequestBody OperationAssetDto operationAssetDto) {
         assetsService.processBuyOperation(clientId, operationAssetDto);
     }
 
     @PostMapping("/operations/assets/sell")
     @Operation(description = "Продать актив")
-    public void sellAsset(@RequestAttribute("clientId") Long clientId, @RequestBody OperationAssetDto operationAssetDto) {
+    public void sellAsset(@RequestAttribute("clientId") Long clientId, @Valid @RequestBody OperationAssetDto operationAssetDto) {
         assetsService.processSellOperation(clientId, operationAssetDto);
     }
 }

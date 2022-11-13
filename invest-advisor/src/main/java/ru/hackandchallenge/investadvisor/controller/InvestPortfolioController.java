@@ -20,13 +20,13 @@ public class InvestPortfolioController {
     @GetMapping
     @Operation(description = "Получить данные об инвест. портфеле для текущего пользователя")
     public InvestPortfolioDto getInfo(@RequestAttribute("clientId") Long clientId) {
-        return investPortfolioService.getInfo(clientId);
+        return investPortfolioService.getInfo(clientId, true);
     }
 
     @GetMapping("/{clientId}")
     @Operation(description = "Получить данные об инвест. портфеле для указанного пользователя")
     public InvestPortfolioDto getInfoForClient(@PathVariable("clientId") Long clientId) {
-        return investPortfolioService.getInfo(clientId);
+        return investPortfolioService.getInfo(clientId, true);
     }
 
     @GetMapping("/totalInvestments")
