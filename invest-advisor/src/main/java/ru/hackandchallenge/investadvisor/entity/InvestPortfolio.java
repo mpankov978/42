@@ -15,7 +15,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -39,6 +41,13 @@ public class InvestPortfolio extends BaseEntity {
 
     @NotNull
     private LocalDateTime created;
+
+    @NotNull
+    private Boolean needMonitor = Boolean.TRUE;
+
+    @OneToMany(fetch = javax.persistence.FetchType.EAGER, mappedBy = "investPortfolio", orphanRemoval = true)
+    @Fetch(FetchMode.SUBSELECT)
+    private List<Notification> notifications = new ArrayList<>();
 
     public void addBalance(BigDecimal amount) {
         this.balance = this.balance.add(amount);

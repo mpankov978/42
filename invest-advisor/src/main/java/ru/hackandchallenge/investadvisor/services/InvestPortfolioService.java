@@ -60,7 +60,7 @@ public class InvestPortfolioService {
     }
 
     public BigDecimal getTotalInvestments(Long clientId, Integer days, boolean all) {
-        return operationHistoryService.getHistory(clientId, days, all).stream()
+        return operationHistoryService.getHistoryDtos(clientId, days, all).stream()
                 .filter(v -> OperationHistory.OperationType.ENROLL.equals(v.operationType()))
                 .map(OperationHistoryDto::assetCost)
                 .reduce(BigDecimal::add)

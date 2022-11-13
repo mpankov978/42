@@ -23,14 +23,14 @@ public class OperationHistoryController {
     @GetMapping
     @Operation(description = "Получить историю операций за промежуток времени (дней) для текущего пользователя")
     public List<OperationHistoryDto> getHistory(@RequestAttribute("clientId") Long clientId, @RequestParam(required = false) Integer days, @RequestParam(required = false) boolean all) {
-        return operationHistoryService.getHistory(clientId, days, all);
+        return operationHistoryService.getHistoryDtos(clientId, days, all);
     }
 
     @OperatorOnly
     @GetMapping("/{clientId}")
     @Operation(description = "Получить историю операций за промежуток времени (дней) для указанного пользователя")
     public List<OperationHistoryDto> getHistoryForClient(@PathVariable("clientId") Long clientId, @RequestParam(required = false) Integer days, @RequestParam(required = false) boolean all) {
-        return operationHistoryService.getHistory(clientId, days, all);
+        return operationHistoryService.getHistoryDtos(clientId, days, all);
     }
 
 }

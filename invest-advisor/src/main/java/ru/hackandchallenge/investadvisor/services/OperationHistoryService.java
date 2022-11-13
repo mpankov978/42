@@ -41,20 +41,25 @@ public class OperationHistoryService {
         repository.save(operationHistory);
     }
 
-    public List<OperationHistoryDto> getHistory(Long clientId, Integer days, boolean all) {
-        List<OperationHistory> history;
-        if (all) {
-            history = repository.findOperationHistoriesByClientId(clientId);
-        } else if (days == 0) {
-            return Collections.emptyList();
-        } else {
-            history = repository.findOperationHistoriesByClientIdAndBetweenDays(clientId, days);
-        }
-        return history.stream()
+    public List<OperationHistoryDto> getHistoryDtos(Long clientId, Integer days, boolean all) {
+        return this.getHistory(clientId, days, all)
+                .stream()
                 .map(operation -> new OperationHistoryDto(operation.getId(), operation.getClientId(),
                         operation.getOperationType(), operation.getAsset() != null ? operation.getAsset().getCode() : null,
                         operation.getAsset() != null ? operation.getAsset().getFullName() : null, operation.getCost(),
                         operation.getAssetAmount(), operation.getOperationTime()))
                 .toList();
+    }
+
+    public List<OperationHistory> getHistory(Long clientId, Integer days, boolean all) {
+        List<OperationHistory> history;
+        if (all) {
+            history = repository.findOperationHistoriesByClientId(clientId);
+        } else if (days == null || days == 0) {
+            return Collections.emptyList();
+        } else {
+            history = repository.findOperationHistoriesByClientIdAndBetweenDays(clientId, days);
+        }
+        return history;
     }
 }
