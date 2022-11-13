@@ -32,3 +32,8 @@ springdoc:
     operations-sorter: method
     doc-expansion: none
     disable-swagger-default-url: true
+
+variables:
+  twelvedataApiKey: 997ed3a430e644949befeab17b59d302
+  portfolioMonitorTrigger: 75
+  portfolioMonitorCron: "@hourly"
