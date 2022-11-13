@@ -1,6 +1,5 @@
 package ru.hackandchallenge.investadvisor.services;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -32,6 +31,10 @@ public class PortfolioMonitor {
     @Value("${variables.portfolioMonitorTrigger}")
     private Integer portfolioMonitorTrigger;
 
+    /**
+     * Метод, отслеживающий критическое падение цены активов в портфеле
+     * portfolioMonitorTrigger - порог падения в процентах
+     */
     @Scheduled(cron = "${variables.portfolioMonitorCron}")
     public void checkPortfolioAssets() {
         List<InvestPortfolio> portfoliosToCheck = portfoliosRepository.findInvestPortfoliosByNeedMonitorIsTrue();
@@ -57,8 +60,6 @@ public class PortfolioMonitor {
                             operation.getAsset().getId(), operation.getCost(), v, LocalDateTime.now(), portfolio));
                 }
             });
-
-
         });
     }
 }

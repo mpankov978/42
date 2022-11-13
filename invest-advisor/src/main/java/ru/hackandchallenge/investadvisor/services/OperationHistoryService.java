@@ -19,6 +19,14 @@ public class OperationHistoryService {
 
     private OperationHistoryRepository repository;
 
+    /**
+     * Залогировать операцию с активом
+     *
+     * @param clientId идентификатор клиента
+     * @param type     тип операции с активом
+     * @param asset    актив
+     * @param amount   сумма
+     */
     public void logAssetOperation(Long clientId, OperationType type, Asset asset, Integer amount) {
         var operationHistory = new OperationHistory();
         operationHistory.setClientId(clientId);
@@ -31,11 +39,17 @@ public class OperationHistoryService {
         repository.save(operationHistory);
     }
 
-    public void logEnrollOperation(Long clientId, BigDecimal cost) {
+    /**
+     * Залогировать операцию зачисления на счет
+     *
+     * @param clientId идентификатор клиента
+     * @param sum      сумма
+     */
+    public void logEnrollOperation(Long clientId, BigDecimal sum) {
         var operationHistory = new OperationHistory();
         operationHistory.setClientId(clientId);
         operationHistory.setOperationType(OperationType.ENROLL);
-        operationHistory.setCost(cost);
+        operationHistory.setCost(sum);
         operationHistory.setOperationTime(LocalDateTime.now());
 
         repository.save(operationHistory);

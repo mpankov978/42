@@ -22,6 +22,9 @@ import java.util.Set;
 
 import static java.util.Arrays.asList;
 
+/**
+ * Сервис, предзаполняющий БД тестовыми данными при первом старте приложения
+ */
 @Service
 @AllArgsConstructor
 public class SeedService {
