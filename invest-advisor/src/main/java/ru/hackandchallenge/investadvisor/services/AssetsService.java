@@ -39,6 +39,14 @@ public class AssetsService {
     private final InvestPortfoliosRepository investPortfoliosRepository;
     private final TwelveDataCollector twelveDataCollector;
 
+    /**
+     * Обработать операцию покупки актива:
+     * Есть есть актив - изменить кол-во у пары портфель-актив, списать деньги, логировать операцию
+     * Если нет актива - создать пару портфель-актив, списать деньги, логировать операцию
+     *
+     * @param clientId          идентификатор клиента
+     * @param operationAssetDto данные об операции над активом
+     */
     @Transactional
     public void processBuyOperation(Long clientId, OperationAssetDto operationAssetDto) {
         InvestPortfolio investPortfolio = investPortfoliosRepository.findInvestPortfolioByClientId(clientId);
@@ -66,6 +74,14 @@ public class AssetsService {
         investPortfoliosRepository.save(investPortfolio);
     }
 
+    /**
+     * Обработать операцию продажи актива:
+     * Есть есть актив - изменить кол-во у пары портфель-актив, зачислить деньги, логировать операцию
+     * Если нет актива - ошибка
+     *
+     * @param clientId          идентификатор клиента
+     * @param operationAssetDto данные об операции над активом
+     */
     @Transactional
     public void processSellOperation(Long clientId, OperationAssetDto operationAssetDto) {
         InvestPortfolio investPortfolio = investPortfoliosRepository.findInvestPortfolioByClientId(clientId);
@@ -97,6 +113,11 @@ public class AssetsService {
         }
     }
 
+    /**
+     * Актуализировать данные актива из открытых источников
+     *
+     * @param asset актив
+     */
     public void updateAssetData(Asset asset) {
         Set<TwelveDataDto> twelveDataDtos = twelveDataCollector.getItems(Collections.singleton(asset.getCode()), "1min");
         TwelveDataValueDto lastAssetInfo = getForAsset(asset, twelveDataDtos);
@@ -111,6 +132,9 @@ public class AssetsService {
         repository.save(asset);
     }
 
+    /**
+     * Актуализировать данные всех активов в системе из открытых источников
+     */
     public void updateAllAssetsData() {
         List<Asset> assets = repository.findAll();
         Set<TwelveDataDto> twelveDataDtos = twelveDataCollector.getItems(ITEMS_MAP.keySet(), "1min");

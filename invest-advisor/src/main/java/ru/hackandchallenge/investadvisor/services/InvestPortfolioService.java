@@ -36,6 +36,16 @@ public class InvestPortfolioService {
         investPortfoliosRepository.save(portfolio);
     }
 
+    /**
+     * Получить инфо о портфеле
+     * Получить портфель, обновить данные об активах при необходимости, вычислить сумму всех активов принадлежащих портфелю,
+     * сложить сумму со счета и сумму всех активов
+     *
+     * @param clientId       идентификатор клиента
+     * @param needUpdateData нужно обновить данные об активах в портфеле
+     *
+     * @return данные портфеля
+     */
     public InvestPortfolioDto getInfo(Long clientId, boolean needUpdateData) {
         if (needUpdateData) {
             assetsService.updateAllAssetsData();
@@ -59,6 +69,15 @@ public class InvestPortfolioService {
         return new InvestPortfolioDto(investPortfolio.getId(), investPortfolio.getClientId(), assets, investPortfolio.getBalance(), assetSum, totalSum);
     }
 
+    /**
+     * Получить сумму всех зачислений на счет портфеля
+     *
+     * @param clientId идентификатор клиента
+     * @param days     промежуток в днях
+     * @param all      выбрать все операции
+     *
+     * @return суммарные инвестиции в портфель
+     */
     public BigDecimal getTotalInvestments(Long clientId, Integer days, boolean all) {
         return operationHistoryService.getHistoryDtos(clientId, days, all).stream()
                 .filter(v -> OperationHistory.OperationType.ENROLL.equals(v.operationType()))
@@ -67,6 +86,12 @@ public class InvestPortfolioService {
                 .orElse(BigDecimal.ZERO);
     }
 
+    /**
+     * Установить ослеживание инвест. портфеля
+     *
+     * @param clientId идентификатор клиента
+     * @param enabled  да/нет
+     */
     public void setMonitorStatus(Long clientId, boolean enabled) {
         InvestPortfolio portfolio = investPortfoliosRepository.findInvestPortfolioByClientId(clientId);
         portfolio.setNeedMonitor(enabled);
