@@ -26,7 +26,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-import static ru.hackandchallenge.investadvisor.controller.InvestingNewsController.ITEMS_MAP;
+import static ru.hackandchallenge.investadvisor.controller.NewsController.ITEMS_MAP;
 
 @Service
 @AllArgsConstructor

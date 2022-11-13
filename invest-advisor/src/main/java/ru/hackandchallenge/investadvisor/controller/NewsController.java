@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.hackandchallenge.investadvisor.aspects.ClientOnly;
 import ru.hackandchallenge.investadvisor.aspects.OperatorOnly;
+import ru.hackandchallenge.investadvisor.collectors.QuoteRbcCollector;
 import ru.hackandchallenge.investadvisor.dto.NewsDto;
 import ru.hackandchallenge.investadvisor.services.InvestingNewsService;
 
@@ -15,9 +16,9 @@ import java.util.Map;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/collectors/investing")
-@Tag(name = "Контроллер новостей", description = "API для получения новостей с Investing.com")
-public class InvestingNewsController {
+@RequestMapping("/collectors/news")
+@Tag(name = "Контроллер новостей", description = "API для получения новостей")
+public class NewsController {
 
     public static final Map<String, String> ITEMS_MAP = new HashMap<>();
     static {
@@ -29,8 +30,9 @@ public class InvestingNewsController {
     }
 
     private final InvestingNewsService newsService;
+    private final QuoteRbcCollector collector;
 
-    @GetMapping("/news/{item}")
+    @GetMapping("/investing/{item}")
     @Operation(description = "Получить новости с Investing.com")
     public List<NewsDto> getNews(
             @PathVariable String item,
@@ -39,7 +41,7 @@ public class InvestingNewsController {
     }
 
     @ClientOnly
-    @GetMapping("/news/mine")
+    @GetMapping("/investing/mine")
     @Operation(description = "Получить новости об активах текущего клиента с Investing.com")
     public List<NewsDto> getMyNews(
             @RequestAttribute Long clientId) {
@@ -47,10 +49,16 @@ public class InvestingNewsController {
     }
 
     @OperatorOnly
-    @GetMapping("/client/{clientId}/news")
+    @GetMapping("investing/client/{clientId}")
     @Operation(description = "Получить новости об активах для указанного клиента с Investing.com")
     public List<NewsDto> getClientNews(
             @PathVariable Long clientId) {
         return newsService.getClientNews(clientId);
+    }
+
+    @GetMapping("/dividends")
+    @Operation(description = "Получить новости с РБК.Дивиденды")
+    public List<NewsDto> dividends(@RequestParam Integer limit) {
+        return collector.collect(limit);
     }
 }
