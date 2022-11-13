@@ -28,8 +28,10 @@ public class SwaggerConfig {
                 )
                 .info(new Info()
                         .title("Invest Advisor")
-                        .description("Описание") //todo: описание
-                        .version("v1.1.2"));
+                        .description("Персональный Advisory-сервис для клиентов, который позволяет экономить время " +
+                                "на поиск инвестиционных идей и\n" +
+                                "управление своим портфелем.")
+                        .version("v1.1.5"));
     }
 
 }
