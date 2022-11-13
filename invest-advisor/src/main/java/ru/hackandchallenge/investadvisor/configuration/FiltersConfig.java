@@ -17,7 +17,7 @@ public class FiltersConfig {
         FilterRegistrationBean<AuthFilter> registrationBean = new FilterRegistrationBean<>();
 
         registrationBean.setFilter(new AuthFilter(checkAuthService, clientComponent));
-        registrationBean.addUrlPatterns("/operations/*", "/collectors/*", "/info/*");
+        registrationBean.addUrlPatterns("/operations/*", "/collectors/*", "/info/*", "/notifications/*");
         registrationBean.setOrder(1);
 
         return registrationBean;
