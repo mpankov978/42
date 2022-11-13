@@ -2,7 +2,7 @@ package ru.hackandchallenge.investadvisor.services;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.hackandchallenge.investadvisor.collectors.quotes.TwelveDataCollector;
+import ru.hackandchallenge.investadvisor.collectors.TwelveDataCollector;
 import ru.hackandchallenge.investadvisor.dto.AssetDto;
 import ru.hackandchallenge.investadvisor.dto.AssetExtendedDto;
 import ru.hackandchallenge.investadvisor.dto.operations.OperationAssetDto;

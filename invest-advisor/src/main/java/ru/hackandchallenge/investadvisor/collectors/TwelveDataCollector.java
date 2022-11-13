@@ -1,4 +1,4 @@
-package ru.hackandchallenge.investadvisor.collectors.quotes;
+package ru.hackandchallenge.investadvisor.collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;

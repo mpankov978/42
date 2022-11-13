@@ -1,4 +1,4 @@
-package ru.hackandchallenge.investadvisor.dto.investing;
+package ru.hackandchallenge.investadvisor.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Schema(description = "Данные новости")
-public class InvestingNewsDto {
+public class NewsDto {
 
     @Schema(description = "Заголовок")
     private String title;
